@@ -11,17 +11,19 @@
 <style>
 
 html, body {
-  overflow: hidden
+  /*overflow: hidden*/
 }
 
 .sketchpad {
   overflow:hidden;
-  margin-top: 5%;
+  margin: 0%;
+  padding: 0%;
 }
 
 .sketchpad canvas {
   cursor: crosshair;
   background-color:#FFF;
+  width: 100%;
   height: 76%;
 /*  box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);*/
 }
@@ -316,10 +318,13 @@ function Sketchpad(config) {
 //
 
 Sketchpad.prototype._cursorPosition = function(event) {
+  let bounds = this.canvas.getBoundingClientRect();
+  let x = event.pageX - bounds.left - scrollX;
+  let y = event.pageY - bounds.top - scrollY;
   return {
-    x: event.pageX - $(this.canvas).offset().left,
-    y: event.pageY - $(this.canvas).offset().top,
-  };
+    x: x/bounds.width*this.canvas.width ,
+    y: y/bounds.height*this.canvas.height,
+  }
 };
 
 Sketchpad.prototype._draw = function(start, end, color, size) {
@@ -384,6 +389,7 @@ Sketchpad.prototype._touchStart = function(event) {
   if (this._sketching) {
     return;
   }
+
   this._lastPosition = this._cursorPosition(event.changedTouches[0]);
   this._currentStroke.color = this.color;
   this._currentStroke.size = this.penSize;
