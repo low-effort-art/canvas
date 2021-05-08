@@ -11,7 +11,7 @@
 <style>
 
 html, body {
-  /*overflow: hidden*/
+  overflow: hidden
 }
 
 .sketchpad {
@@ -25,14 +25,12 @@ html, body {
   background-color:#FFF;
   width: 100%;
   height: 76%;
-/*  box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);*/
 }
 
 .button {
   font-size: 1.5em;
   cursor: pointer;
 }
-
 
 .top-bar div {
   float: left;
@@ -107,7 +105,6 @@ li:not(.active) > a {
 class ColorPicker {
   constructor() {
     this.colors = ['#FFFFFF', '#050505', '#248DC9', '#00CD00', '#FFCF00', '#F82000', '#FF9806', '#FF59BF', '#9B00F1', '#AF5100', '#633101', '#EBBA47', '#EC4D76', '#941251', '#6DA0C2', '#9C954A', '#757575']
-
     this.sizes = new Array(this.colors.length).fill(0)
     this.active = -1
   }
@@ -116,10 +113,10 @@ class ColorPicker {
     let div = $('.color-bar');
     for (let i=0; i<this.colors.length; i++){
 
-      // special handling for white
+      // special border for white
       let style_args = '';
       let outer_color = this.colors[i];
-      if (i==0){
+      if (this.colors[i]=='#FFFFFF'){
         outer_color = '#757575'
         style_args = '-webkit-text-fill-color: white; -webkit-text-stroke-width: 0.5px; -webkit-text-stroke-color:#757575'
       }
@@ -132,6 +129,7 @@ class ColorPicker {
       `)
 
       dot.click(el => this.click_dot(i))
+
       div.append(dot);
     }
     this.click_dot(0)
@@ -146,30 +144,25 @@ class ColorPicker {
     }
 
     let dot = $(`span[dotid="${dot_id}"]`)
-
-
     if (this.active==dot_id){
       this.sizes[dot_id] = (this.sizes[dot_id] + 1) % 3
       let size = (this.sizes[dot_id]+1)*0.35
       dot.find('.inner-dot').css({'font-size':`${size}em`})
       dot.find('.outer-dot').css({'font-size':`${size+0.5}em`})
     }
-
     dot.addClass('active')
 
     this.active = dot_id
     set_color(this.colors[this.active])
     set_size(this.sizes[this.active])
-
   }
-
 }
 
 var sketchpad;
 var colorpicker;
 $(document).ready(function() {
   width = window.innerWidth;
-  height = window.innerHeight-90;
+  height = window.innerHeight;
 
   sketchpad = new Sketchpad({
     element: '#sketchpad',
@@ -198,48 +191,29 @@ function set_size(val) {
   sketchpad.penSize = (val+1)*5;
 }
 
-function animateSketchpad() {
-  sketchpad.animate(10);
+function submitDrawing(){
+  var canvas = document.getElementById("sketchpad");
+  var img = canvas.toDataURL("image/png", 1.0);
+  $(document).ready(function(){
+
+      var endpoint = "https://wge511aw09.execute-api.us-east-1.amazonaws.com/prod" 
+      $.ajax({
+          type: 'POST',
+          url: endpoint,
+          data: `{"img": "${img}"}`,
+          dataType: 'json',
+          success: function(responseData, textStatus, jqXHR) {
+              var value = responseData.body.result;
+              document.write('<div align="center"> Your image has been submitted successfully. Admire it in all its glory here </div>');
+              document.write('<img src="'+img+'"/>');
+          },
+          error: function (responseData, textStatus, errorThrown) {
+              alert('POST failed.');
+          }
+      });
+  });
 }
 
-function recover(event) {
-  var settings = sketchpad.toObject();
-  settings.element = '#other-sketchpad';
-  var otherSketchpad = new Sketchpad(settings);
-  $('#recover-button').hide();
-}
-
-</script>
-
-<script type="text/javascript" language="javascript">
-function submitDrawing(stuff) {
-    var canvas = document.getElementById("sketchpad");
-    var img = canvas.toDataURL("image/jpeg", 1.0);
-    $(document).ready(function(){
-
-        var endpoint = "https://wge511aw09.execute-api.us-east-1.amazonaws.com/prod" 
-        $.ajax({
-            type: 'POST',
-            url: endpoint,
-            data: `{"img": "${img}"}`,
-            dataType: 'json',
-            success: function(responseData, textStatus, jqXHR) {
-                var value = responseData.body.result;
-                document.write('<div align="center"> Your image has been submitted successfully. Admire it in all its glory here </div>');
-                document.write('<img src="'+img+'"/>');
-            },
-            error: function (responseData, textStatus, errorThrown) {
-                alert('POST failed.');
-            }
-        });
-    });
-
-    console.log("image"+ img);
-}
-</script>
-
-
-<script>
 //    The MIT License (MIT)
 //
 //    Copyright (c) 2014 YIOM
