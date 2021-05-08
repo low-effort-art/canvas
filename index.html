@@ -445,6 +445,40 @@ Sketchpad.prototype.reset = function() {
   this.canvas.addEventListener('touchend', this._touchEnd);
   this.canvas.addEventListener('touchcancel', this._touchCancel);
   this.canvas.addEventListener('touchleave', this._touchLeave);
+
+
+  // todo: convert to proper format later
+  function onLongPress(element, callback) {
+    let timer;
+
+    element.addEventListener('touchstart', () => { 
+      this._sketching = true;
+      timer = setTimeout(() => {
+        timer = null;
+        callback();
+      }, 300);
+    });
+
+    function cancel() {
+      clearTimeout(timer);
+      this._sketching = false;
+    }
+
+    element.addEventListener('touchend', cancel);
+    element.addEventListener('touchmove', cancel);
+  }
+
+  onLongPress(this.canvas, () => {
+    let stroke = {
+      color: this.color,
+      size: this.canvas.width,
+      lines: [{'start':{'x':this.canvas.width/2, 'y':0}, 'end':{'x':this.canvas.width/2, 'y':this.canvas.height}}],
+    };
+    this.strokes.push($.extend(true, {}, stroke))
+    this.drawStroke(stroke);
+    this._sketching = false;
+  });
+
 };
 
 Sketchpad.prototype.drawStroke = function(stroke) {
