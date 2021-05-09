@@ -174,7 +174,7 @@ Sketchpad.prototype._touchEnd = function(event) {
       let pos = this._lastPosition
       let line = {
         'start': {'x':pos.x, 'y':pos.y},
-        'end': {'x':pos.x+1, 'y':pos.y+1}
+        'end': {'x':pos.x, 'y':pos.y+1}
       }
       this._currentStroke.lines.push(line)
       this.drawStroke(this._currentStroke);
