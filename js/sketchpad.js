@@ -245,7 +245,7 @@ Sketchpad.prototype.reset = function() {
 
   // NOTE: This was a manual change to force white 
   // background on the Canvas
-  this.context.fillStyle = '#fff';  /// set white fill style
+  this.context.fillStyle = '#ffffff';  /// set white fill style
   this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
   // Setup event listeners
