@@ -353,14 +353,10 @@ class ColorPalette {
     this.div = $(options.div)
     this.sketchpad = options.sketchpad
     this.colors = options.colors
-    this.sizes = new Array(this.colors.length).fill(0)
+    this.size = 0
     this.active = -1
 
     this.create_colorbar()
-  }
-
-  get size(){
-    return this.sizes[this.active]
   }
 
   get color(){
@@ -401,9 +397,9 @@ class ColorPalette {
     }
 
     if (this.active==dot_id)
-      this.sizes[dot_id] = (this.sizes[dot_id] + 1) % 3
+      this.size = (this.size + 1) % 3
 
-    let size = (this.sizes[dot_id]+1)*0.35
+    let size = (this.size+1)*0.35
     let dot = $(`span[dotid="${dot_id}"]`)
     dot.find('.inner-dot').css({'font-size':`${size}em`})
     dot.find('.outer-dot').css({'font-size':`${size+0.5}em`})
@@ -411,6 +407,6 @@ class ColorPalette {
 
     this.active = dot_id
     this.sketchpad.color = this.colors[this.active];
-    this.sketchpad.penSize = (this.sizes[this.active]+1)*5
+    this.sketchpad.penSize = (this.size+1)*5
   }
 }
