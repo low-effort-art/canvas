@@ -388,7 +388,7 @@ class ColorPalette {
 
       this.div.append(dot);
     }
-    this.click_dot(0)
+    this.click_dot(1)
   }
 
   click_dot(dot_id){
