@@ -243,8 +243,7 @@ Sketchpad.prototype.reset = function() {
   this.canvas.height = this._height;
   this.context = this.canvas.getContext('2d');
 
-  // NOTE: This was a manual change to force white 
-  // background on the Canvas
+  // [!!] force white background on the Canvas
   this.context.fillStyle = '#ffffff';  /// set white fill style
   this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -323,7 +322,11 @@ Sketchpad.prototype.cancelAnimation = function() {
 };
 
 Sketchpad.prototype.clear = function() {
-  this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  // [!!] White bg
+  this.context.fillStyle = '#ffffff';
+  this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
 };
 
 Sketchpad.prototype.undo = function() {
