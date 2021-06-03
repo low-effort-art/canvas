@@ -42,23 +42,16 @@ function Sketchpad(config) {
   this.element = config.element;
 
   // Width can be defined on the HTML or programatically
-  this._width = config.width || $(this.element).attr('data-width') || 0;
-  this._height = config.height || $(this.element).attr('data-height') || 0;
+  this._width = config.scale * config.width;
+  this._height = config.scale * config.height;
 
   // Pen attributes
-  this.color = config.color || $(this.element).attr('data-color') || '#000000';
-  this.penSize = config.penSize || $(this.element).attr('data-penSize') || 5;
-
-  // ReadOnly sketchpads may not be modified
-  this.readOnly = config.readOnly ||
-                  $(this.element).attr('data-readOnly') ||
-                  false;
-  if (!this.readOnly) {
-      $(this.element).css({cursor: 'crosshair'});
-  }
+  this.color = '#000000';
+  this.penSize = 0;
+  this.basePenSize = 5 * config.scale;
 
   // Stroke control variables
-  this.strokes = config.strokes || [];
+  this.strokes = [];
   this._currentStroke = {
     color: null,
     size: null,
@@ -66,7 +59,7 @@ function Sketchpad(config) {
   };
 
   // Undo History
-  this.undoHistory = config.undoHistory || [];
+  this.undoHistory = [];
 
   // Animation function calls
   this.animateIds = [];
@@ -250,10 +243,6 @@ Sketchpad.prototype.reset = function() {
   // Setup event listeners
   this.redraw(this.strokes);
 
-  if (this.readOnly) {
-    return;
-  }
-
   // Mouse
   this.canvas.addEventListener('mousedown', this._mouseDown);
   this.canvas.addEventListener('mouseout', this._mouseUp);
@@ -410,6 +399,6 @@ class ColorPalette {
 
     this.active = dot_id
     this.sketchpad.color = this.colors[this.active];
-    this.sketchpad.penSize = (this.size+1)*5
+    this.sketchpad.penSize = (this.size+1)*this.sketchpad.basePenSize
   }
 }

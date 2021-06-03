@@ -53,8 +53,12 @@
 var sketchpad = new Sketchpad({
     element: '#sketchpad',
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
+    scale: 4.0,
   });
+
+console.log(window.innerWidth, window.innerHeight)
+
 
 var palette = new ColorPalette({
   div: '#palette-bar',
